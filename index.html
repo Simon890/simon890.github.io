@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>RevLang</title>
+</head>
+<body class="bg-gray-200">
+    <h1 class="text-4xl text-center p-3">
+        <span>
+            Rev
+        </span>
+        <span class="bg-blue-500 text-white rounded-lg px-2">
+            Lang
+        </span>
+    </h1>
+
+    <div class="w-full flex justify-center mb-3">
+        <button id="btnRun" class="px-4 py-2 bg-blue-600 text-white rounded-md">
+            Run
+        </button>
+    </div>
+
+    <div class="w-full flex px-4 rounded-md">
+        <textarea class="w-1/2 p-4" style="min-height: 400px;" id="input"></textarea>
+        <div class="w-1/2 bg-gray-800 text-white p-4" id="output">
+            
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="w-1/3 mt-8 mx-4 bg-white p-4">
+            <h3 class="text-4xl">Native Functions</h3>
+            <ul class="space-y-4 text-gray-700 list-disc list-inside">
+                <li>
+                    print(
+                        <span class="text-emerald-600">infinite</span> 
+                        <span class="text-red-600">required</span> 
+                        <span class="text-violet-600">number</span> args): Logs a value in the console
+                        <ol class="text-gray-500 ">
+                            <li>Example: print(1, "string", 3 == "3")</li>
+                        </ol>
+                </li>
+                <li>
+                    max(
+                        <span class="text-emerald-600">infinite</span>
+                        <span class="text-red-600">required</span>
+                        <span class="text-violet-600">number</span>
+                        args): Returns the maximum number
+                        <ol class="text-gray-500">
+                            <li>Example: max(4, 6, 7, 8, 2, 1)</li>
+                        </ol>
+                </li>
+                <li>
+                    rand(
+                        <span class="text-red-600">required</span>
+                        <span class="text-violet-600">number</span>
+                        min, 
+                        <span class="text-red-600">required</span>
+                        <span class="text-violet-600">number</span>
+                        max): Returns a random number between the min and max
+                        <ol class="text-gray-500">
+                            <li>Example: rand(10, 20)</li>
+                        </ol>
+                </li>
+                <li>
+                    trim(
+                        <span class="text-red-600">required</span>
+                        <span class="text-violet-600">string</span>
+                        text): Trims a string
+                        <ol class="text-gray-500">
+                            <li>Example: trim("     string    ")</li>
+                        </ol>
+                </li>
+                <li>
+                    str(
+                        <span class="text-red-600">required</span>
+                        <span class="text-violet-600">any</span>
+                        value
+                        ): Casts a value to a string
+                        <ol class="text-gray-500">
+                            <li>Example: str(10)</li>
+                        </ol>
+                </li>
+                <li>
+                    clear(): Clears the console
+                </li>
+            </ul>
+        </div>
+        <div class="w-1/3 mt-8 mx-4 bg-white p-4">
+            <h3 class="text-4xl">Syntaxt</h3>
+            <ul class="space-y-4 text-gray-700 list-disc list-inside">
+                <li>Variables: let name = 4</li>
+                <li>Constants: final name = 4</li>
+                <li>Functions: let functionName = (param1, param2) { <br>
+                        <span class="ml-10">
+                            //body
+                        </span>
+                        <br>
+                        <span class="ml-5">
+                            }
+                        </span>
+                </li>
+                <li>Functions call: functionName(arg1, arg2)</li>
+                <li>Comparison:
+                    <ul class="ml-8 text-gray-700 list-disc list-inside">
+                        <li>
+                            Equal: a == b
+                        </li>
+                        <li>
+                            Not equal: a != b
+                        </li>
+                        <li>
+                            Greater than: a > b
+                        </li>
+                        <li>
+                            Less than: a < b
+                        </li>
+                        <li>
+                            Greater or equal than: a >= b
+                        </li>
+                        <li>
+                            Less or equal than: a <= b
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="./revlang.js"></script>
+    <script>
+        const originalLog = console.log;
+        const outputDiv = document.getElementById("output");
+        console.log = function(txt) {
+            outputDiv.innerHTML += `<div class="mb-4"><span class="bg-white text-gray-800 px-1 py-2 rounded-md mr-3">RevLang ></span> <span>${txt}</span><br></div>`
+        }
+
+        const originalClear = console.clear;
+        console.clear = function() {
+            outputDiv.innerHTML = "";
+        }
+
+        const btnRun = document.getElementById("btnRun");
+        const textArea = document.getElementById("input");
+
+        textArea.addEventListener("keydown", function(e) {
+            if(e.key == "Tab") {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + "\t" + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 1;
+            }
+        });
+        textArea.value = `let a = "RevLang"
+final PI = 3.14
+let circleArea = (radius) {
+    let area = PI * radius * radius
+    print(a, "says the area is", area)
+}
+
+circleArea(9)`;
+
+        btnRun.addEventListener("click", () => {
+            outputDiv.innerHTML = "";
+            const revLang = new RevLang.Interpreter();
+            revLang.run(textArea.value);
+        });
+    </script>
+</body>
+</html>
