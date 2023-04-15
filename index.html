@@ -130,12 +130,17 @@
         </div>
     </div>
 
-    <script src="./revlang.123.js"></script>
+    <script src="./revlang.321.js"></script>
     <script>
         const originalLog = console.log;
         const outputDiv = document.getElementById("output");
         console.log = function(txt) {
             outputDiv.innerHTML += `<div class="mb-4"><span class="bg-white text-gray-800 px-1 py-2 rounded-md mr-3">RevLang ></span> <span>${txt}</span><br></div>`
+        }
+
+        const originalError = console.error;
+        console.error = function(...txt) {
+            outputDiv.innerHTML += `<div class="mb-4"><span class="bg-white text-gray-800 px-1 py-2 rounded-md mr-3">RevLang ></span> <span class="text-red-500">${txt}</span><br></div>`;
         }
 
         const originalClear = console.clear;
@@ -165,9 +170,14 @@ let circleArea = (radius) {
 circleArea(9)`;
 
         btnRun.addEventListener("click", () => {
-            outputDiv.innerHTML = "";
-            const revLang = new RevLang.Interpreter();
-            revLang.run(textArea.value);
+            try {
+                outputDiv.innerHTML = "";
+                const revLang = new RevLang.Interpreter();
+                revLang.run(textArea.value);
+            } catch(err) {
+                const msg = new Error(err).message;
+                console.error(msg);
+            }
         });
     </script>
 </body>
